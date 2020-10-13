@@ -31,3 +31,4 @@ runcmd:
   - /sbin/sysctl -p
   - iptables -t nat -A PREROUTING -p tcp --dport 5001 -j DNAT --to-destination 127.0.0.1:5001
   - iptables-save > /etc/iptables/rules.v4
+  - /bin/systemctl start route-reporter.service
