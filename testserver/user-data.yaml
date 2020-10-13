@@ -1,0 +1,33 @@
+#cloud-config
+packages:
+  - python3-pip
+  - python3-setuptools
+  - python3-wheel
+  - git
+  - unzip
+  - iptables-persistent
+write_files:
+  - content: |
+      [Unit]
+      Description=Test Routing Service
+      After=network.target
+      StartLimitIntervalSec=0
+      [Service]
+      Type=simple
+      Restart=always
+      RestartSec=1
+      User=root
+      Environment=SERVER_PORT=5001
+      ExecStart=/var/lib/ibmcloud_routeable_subnet_test_harness/testserver/server.py
+      [Install]
+      WantedBy=multi-user.target
+    path: /etc/systemd/system/route-reporter.service
+    owner: root:root
+    permissions: '0755'
+runcmd:
+  - /usr/bin/git clone https://github.com/jgruberf5/ibmcloud_routable_subnet_test_harness.git /var/lib/ibmcloud_routeable_subnet_test_harness
+  - /bin/echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
+  - /bin/echo net.ipv4.conf.all.route_localnet=1 >> /etc/sysctl.conf
+  - /sbin/sysctl -p
+  - iptables -t nat -A PREROUTING -p tcp --dport 5001 -j DNAT --to-destination 127.0.0.1:5001
+  - iptables-save > /etc/iptables/rules.v4
