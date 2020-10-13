@@ -30,7 +30,7 @@ def initialize():
 def main():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((SERVER_HOST, SERVER_PORT))
-    data = client.recv(1024).decode('utf8')
+    data = client.recv(256).decode('utf8')
     LOG.info('client received: %s', data)
 
 

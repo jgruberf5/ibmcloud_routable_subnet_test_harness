@@ -47,7 +47,7 @@ class ClientThread(threading.Thread):
         LOG.debug('accepted connection for %s:%d', ip, port)
 
     def run(self):
-        message = "%s:%s->%s:%s" % (self.ip, self.port,
+        message = "%s:%s->%s:%s\n" % (self.ip, self.port,
                                     SERVER_ETH0_IP, SERVER_PORT)
         self.conn.send(message.encode())
         self.conn.close()
