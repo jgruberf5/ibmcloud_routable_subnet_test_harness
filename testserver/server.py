@@ -27,7 +27,7 @@ def get_interface_ip(interface):
     return os.popen("ip addr show %s" % interface).read().split("inet ")[1].split("/")[0]
 
 def get_default_gw_interface():
-    return os.popen("ip r|grep default|grep -v dhcp|cut -d' ' -f5").read().strip()
+    return os.popen("ip r|grep default|cut -d' ' -f5").read().strip()
 
 
 def initialize():
