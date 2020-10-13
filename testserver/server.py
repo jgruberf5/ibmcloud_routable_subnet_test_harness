@@ -26,12 +26,15 @@ LOG.addHandler(LOGSTREAM)
 def get_interface_ip(interface):
     return os.popen('ip addr show %s' % interface).read().split("inet ")[1].split("/")[0]
 
+def get_default_gw_interface():
+    return os.popen('ip r|grep default|grep -v dhcp|cut -d' ' -f5').read()
+
 
 def initialize():
     global SERVER_HOST, SERVER_PORT, SERVER_ETH0_IP
     SERVER_HOST = os.getenv('SERVER_HOST', '127.0.0.1')
     SERVER_PORT = int(os.getenv('SERVER_PORT', '5001'))
-    SERVER_ETH0_IP = get_interface_ip('eth0')
+    SERVER_ETH0_IP = get_interface_ip(get_default_gw_interface())
 
 
 class ClientThread(threading.Thread):
