@@ -18,6 +18,7 @@ LOG.addHandler(LOGSTREAM)
 SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 5001
 
+
 def initialize():
     global SERVER_HOST, SERVER_PORT
     SERVER_HOST = os.getenv('SERVER_HOST', '127.0.0.1')
@@ -27,11 +28,24 @@ def initialize():
         SERVER_PORT = int(sys.argv[2])
 
 
-def main():
+def return_gateway_ip(data):
+    return data.split('>')[1].split(':')[0].strip()
+
+
+def connect_and_report(host=None, port=None):
+    if not host:
+        host = SERVER_HOST
+    if not port:
+        port = SERVER_PORT
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((SERVER_HOST, SERVER_PORT))
-    data = client.recv(256).decode('utf8').strip()
+    return client.recv(256).decode('utf8').strip()
+
+
+def main():
+    data = connect_and_report()
     LOG.info('client received: %s', data)
+    LOG.info('gateway ip: %s', return_gateway_ip(data))
 
 
 if __name__ == '__main__':
@@ -52,4 +66,3 @@ if __name__ == '__main__':
     except Exception as ex:
         LOG.error(ex)
         sys.exit(1)
-
